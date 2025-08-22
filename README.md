@@ -1,7 +1,9 @@
 # LeTime
 
 LeTime is a desktop application activity tracker, similar in functionality to applications like [ActivityWatch](https://github.com/ActivityWatch/activitywatch). It's built with a C++ backend for tracking application usage and a Python/Flask frontend for a web-based user interface to visualize the data.
->**Note:** To be fair I'm not actively maintaining this app currently 👍 At least for now. A lot of things doesn't work and a lot of things are still not added. But if you want you can add it yourself. 💀💀💀
+>**Note:** To be fair I'm not actively maintaining this app currently 👍 At least for now. A lot of things doesn't work and a lot of things are still not added. This was supposed to be my "I want to learn C++" project, but after a while I decided I'd had enough, so I'm leaving it for now. But if you want you can add it yourself. 💀💀💀
+
+
 ## Screenshots
 | Light Mode | Dark Mode |
 |------------|-----------|
