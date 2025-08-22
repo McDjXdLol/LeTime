@@ -1,0 +1,10 @@
+.ropeproject
+.vscode
+.idea
+dist
+build
+front/front-venv
+logs/*
+app.exe
+make.bat
+*.spec

@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Productivity Tracker</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg-color: #f3f4f6;
+                --card-bg: #fff;
+                --card-border: #d1d5db;
+                --card-purple-bg: #f5f3ff;
+                --card-purple-border: #ddd6fe;
+                --text-color: #333;
+                --heading-color: #1f2937;
+                --subtitle-color: #6b7280;
+                --accent-color: #2563eb;
+                --no-data-color: #6b7280;
+                --app-item-bg: #fff;
+                --app-item-border: #e5e7eb;
+                --date-input-border: #d1d5db;
+                --date-input-focus: #3b82f6;
+            }
+
+            body.dark-mode {
+                --bg-color: #1f2937;
+                --card-bg: #374151;
+                --card-border: #4b5563;
+                --card-purple-bg: #2d3748;
+                --card-purple-border: #4a5568;
+                --text-color: #d1d5db;
+                --heading-color: #e5e7eb;
+                --subtitle-color: #9ca3af;
+                --accent-color: #60a5fa;
+                --no-data-color: #9ca3af;
+                --app-item-bg: #4b5563;
+                --app-item-border: #6b7280;
+                --date-input-border: #4b5563;
+                --date-input-focus: #60a5fa;
+            }
+
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 2rem;
+                transition:
+                    background-color 0.3s ease,
+                    color 0.3s ease;
+            }
+            .container {
+                max-width: 1024px;
+                margin: 0 auto;
+                background-color: var(--card-bg);
+                border-radius: 1.5rem;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+                padding: 2.5rem;
+                transition: all 0.3s ease-in-out;
+            }
+            header {
+                text-align: center;
+                margin-bottom: 2rem;
+                position: relative;
+            }
+            h1 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                color: var(--heading-color);
+                margin-bottom: 0.5rem;
+            }
+            .subtitle {
+                font-size: 1.125rem;
+                color: var(--subtitle-color);
+            }
+            .dark-mode-toggle {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5rem;
+                color: var(--text-color);
+                transition: color 0.3s ease;
+            }
+            .dark-mode-toggle:hover {
+                color: var(--accent-color);
+            }
+            .date-section {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 2rem;
+                gap: 1rem;
+            }
+            .date-label {
+                font-size: 1.125rem;
+                font-weight: 600;
+                color: var(--subtitle-color);
+            }
+            .date-input {
+                padding: 0.5rem;
+                border: 1px solid var(--date-input-border);
+                border-radius: 0.375rem;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                transition: all 0.2s ease-in-out;
+                background-color: var(--app-item-bg);
+                color: var(--text-color);
+            }
+            .date-input:focus {
+                outline: none;
+                border-color: var(--date-input-focus);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+            }
+            .main-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            @media (min-width: 768px) {
+                .main-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            .card {
+                background-color: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 1rem;
+                padding: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+            }
+            .card-purple {
+                background-color: var(--card-purple-bg);
+                border-color: var(--card-purple-border);
+            }
+            .card-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: var(--heading-color);
+                margin-bottom: 1rem;
+            }
+            .total-time {
+                text-align: center;
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--accent-color);
+                margin-bottom: 1rem;
+            }
+            .chart-container {
+                height: 256px;
+                margin-bottom: 1rem;
+            }
+            .app-list {
+                list-style: none;
+                padding: 0;
+                margin-top: 1.5rem;
+            }
+            .app-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: var(--app-item-bg);
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--app-item-border);
+                margin-bottom: 0.5rem;
+                transition: all 0.3s ease;
+            }
+            .app-name {
+                font-weight: 600;
+                color: var(--heading-color);
+            }
+            .app-time {
+                color: var(--subtitle-color);
+            }
+            .app-last-used {
+                display: none;
+                color: var(--no-data-color);
+                font-size: 0.75rem;
+                margin-left: 0.5rem;
+            }
+            @media (min-width: 640px) {
+                .app-last-used {
+                    display: inline-block;
+                }
+            }
+            .no-data {
+                text-align: center;
+                color: var(--no-data-color);
+                padding: 2.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <button
+                    id="darkModeToggle"
+                    class="dark-mode-toggle"
+                    aria-label="Toggle dark mode"
+                >
+                    🌙
+                </button>
+                <h1>Your Daily Productivity Report 📊</h1>
+                <p class="subtitle">
+                    Time spent analysis for your applications
+                </p>
+            </header>
+
+            <div class="date-section">
+                <label for="date-picker" class="date-label"
+                    >Select a date:</label
+                >
+                <input type="date" id="date-picker" class="date-input" />
+            </div>
+
+            <div class="main-grid">
+                <!-- Doughnut chart and summary -->
+                <div class="card">
+                    <h2 class="card-title">
+                        Summary for <span id="selected-date-text"></span>
+                    </h2>
+                    <div id="total-time" class="total-time">Loading...</div>
+                    <div class="chart-container">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                    <div
+                        id="doughnut-no-data"
+                        class="no-data"
+                        style="display: none"
+                    >
+                        No data for the selected date.
+                    </div>
+                    <ul id="app-list" class="app-list"></ul>
+                </div>
+
+                <!-- Bar chart for trend -->
+                <div class="card card-purple">
+                    <h2 class="card-title">Daily usage trend</h2>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    <div id="bar-no-data" class="no-data" style="display: none">
+                        Not enough data to display a trend.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                // DOM element references
+                const datePicker = document.getElementById("date-picker");
+                const selectedDateText =
+                    document.getElementById("selected-date-text");
+                const totalTimeElement = document.getElementById("total-time");
+                const appList = document.getElementById("app-list");
+                const doughnutChartCanvas =
+                    document.getElementById("doughnutChart");
+                const barChartCanvas = document.getElementById("barChart");
+                const doughnutNoData =
+                    document.getElementById("doughnut-no-data");
+                const barNoData = document.getElementById("bar-no-data");
+                const darkModeToggle =
+                    document.getElementById("darkModeToggle");
+
+                let appStats = {};
+                let doughnutChartInstance = null;
+                let barChartInstance = null;
+                const chartColors = [
+                    "rgba(255, 99, 132, 0.8)",
+                    "rgba(54, 162, 235, 0.8)",
+                    "rgba(255, 206, 86, 0.8)",
+                    "rgba(75, 192, 192, 0.8)",
+                    "rgba(153, 102, 255, 0.8)",
+                    "rgba(255, 159, 64, 0.8)",
+                    "rgba(102, 255, 159, 0.8)",
+                ];
+                const darkChartColors = [
+                    "rgba(255, 99, 132, 0.8)",
+                    "rgba(110, 150, 255, 0.8)",
+                    "rgba(255, 220, 100, 0.8)",
+                    "rgba(100, 220, 220, 0.8)",
+                    "rgba(180, 150, 255, 0.8)",
+                    "rgba(255, 180, 90, 0.8)",
+                    "rgba(120, 255, 180, 0.8)",
+                ];
+
+                // Helper functions for time conversion
+                const timeToSeconds = (time) => {
+                    const [hours, minutes, seconds] = time
+                        .split(":")
+                        .map(Number);
+                    return hours * 3600 + minutes * 60 + seconds;
+                };
+
+                const secondsToTime = (seconds) => {
+                    const hours = Math.floor(seconds / 3600);
+                    const minutes = Math.floor((seconds % 3600) / 60);
+                    const remainingSeconds = seconds % 60;
+                    return [hours, minutes, remainingSeconds]
+                        .map((v) => v.toString().padStart(2, "0"))
+                        .join(":");
+                };
+
+                // Function to toggle dark mode
+                const toggleDarkMode = () => {
+                    const isDarkMode =
+                        document.body.classList.toggle("dark-mode");
+                    localStorage.setItem(
+                        "theme",
+                        isDarkMode ? "dark" : "light",
+                    );
+                    darkModeToggle.textContent = isDarkMode ? "☀️" : "🌙";
+
+                    // Redraw charts to update colors
+                    if (appStats[datePicker.value]) {
+                        updateUI(datePicker.value);
+                    }
+                    drawBarChart(appStats);
+                };
+
+                // Function to draw the doughnut chart or update it
+                const drawDoughnutChart = (data) => {
+                    const labels = data.map((item) => item[0]);
+                    const chartData = data.map((item) =>
+                        timeToSeconds(item[1][0]),
+                    );
+                    const currentColors = document.body.classList.contains(
+                        "dark-mode",
+                    )
+                        ? darkChartColors
+                        : chartColors;
+
+                    if (doughnutChartInstance) {
+                        // Update existing chart
+                        doughnutChartInstance.data.labels = labels;
+                        doughnutChartInstance.data.datasets[0].data = chartData;
+                        doughnutChartInstance.data.datasets[0].backgroundColor =
+                            currentColors;
+                        doughnutChartInstance.data.datasets[0].borderColor =
+                            currentColors.map((c) => c.replace("0.8", "1"));
+                        doughnutChartInstance.update();
+                    } else {
+                        // Create new chart
+                        doughnutChartInstance = new Chart(doughnutChartCanvas, {
+                            type: "doughnut",
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: "Usage Time",
+                                        data: chartData,
+                                        backgroundColor: currentColors,
+                                        borderColor: currentColors.map((c) =>
+                                            c.replace("0.8", "1"),
+                                        ),
+                                        borderWidth: 1,
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: "bottom",
+                                        labels: {
+                                            color: document.body.classList.contains(
+                                                "dark-mode",
+                                            )
+                                                ? "#d1d5db"
+                                                : "#333",
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
+                };
+
+                // Function to draw the bar chart or update it
+                const drawBarChart = (data) => {
+                    const labels = Object.keys(data);
+                    const chartData = labels.map((date) => {
+                        const dailyData = data[date];
+                        return Object.values(dailyData).reduce(
+                            (sum, timeArray) =>
+                                sum + timeToSeconds(timeArray[0]),
+                            0,
+                        );
+                    });
+
+                    const barColor = document.body.classList.contains(
+                        "dark-mode",
+                    )
+                        ? "rgba(96, 165, 250, 0.8)"
+                        : "rgba(54, 162, 235, 0.8)";
+                    const barBorderColor = document.body.classList.contains(
+                        "dark-mode",
+                    )
+                        ? "rgba(96, 165, 250, 1)"
+                        : "rgba(54, 162, 235, 1)";
+
+                    if (barChartInstance) {
+                        // Update existing chart
+                        barChartInstance.data.labels = labels;
+                        barChartInstance.data.datasets[0].data = chartData;
+                        barChartInstance.data.datasets[0].backgroundColor =
+                            barColor;
+                        barChartInstance.data.datasets[0].borderColor =
+                            barBorderColor;
+                        barChartInstance.update();
+                    } else {
+                        // Create new chart
+                        barChartInstance = new Chart(barChartCanvas, {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: "Total Daily Time",
+                                        data: chartData,
+                                        backgroundColor: barColor,
+                                        borderColor: barBorderColor,
+                                        borderWidth: 1,
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            color: document.body.classList.contains(
+                                                "dark-mode",
+                                            )
+                                                ? "#d1d5db"
+                                                : "#333",
+                                        },
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: "Minutes",
+                                            color: document.body.classList.contains(
+                                                "dark-mode",
+                                            )
+                                                ? "#d1d5db"
+                                                : "#333",
+                                        },
+                                        ticks: {
+                                            color: document.body.classList.contains(
+                                                "dark-mode",
+                                            )
+                                                ? "#d1d5db"
+                                                : "#333",
+                                            callback: function (value) {
+                                                return (value / 60).toFixed(0);
+                                            },
+                                        },
+                                        grid: {
+                                            color: document.body.classList.contains(
+                                                "dark-mode",
+                                            )
+                                                ? "#4b5563"
+                                                : "#e5e7eb",
+                                        },
+                                    },
+                                },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: document.body.classList.contains(
+                                                "dark-mode",
+                                            )
+                                                ? "#d1d5db"
+                                                : "#333",
+                                        },
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function (context) {
+                                                const valueInSeconds =
+                                                    context.raw;
+                                                const timeString =
+                                                    secondsToTime(
+                                                        valueInSeconds,
+                                                    );
+                                                return `Total Daily Time: ${timeString}`;
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        });
+                    }
+                };
+
+                // Function to update the UI
+                const updateUI = (date) => {
+                    selectedDateText.textContent = date;
+                    const dailyData = appStats[date];
+
+                    if (dailyData) {
+                        const sortedData = Object.entries(dailyData).sort(
+                            ([, a], [, b]) =>
+                                timeToSeconds(b[0]) - timeToSeconds(a[0]),
+                        );
+
+                        // Update application list
+                        appList.innerHTML = "";
+                        sortedData.forEach(([app, [time, lastUsed]]) => {
+                            const li = document.createElement("li");
+                            li.className = "app-item";
+                            li.innerHTML = `
+                    <span class="app-name">${app}</span>
+                    <span class="app-time">
+                      <span class="font-mono">${time}</span>
+                      <span class="app-last-used">(last used: ${new Date(lastUsed).toLocaleTimeString()})</span>
+                    </span>
+                `;
+                            appList.appendChild(li);
+                        });
+
+                        const totalSeconds = Object.values(dailyData).reduce(
+                            (sum, timeArray) =>
+                                sum + timeToSeconds(timeArray[0]),
+                            0,
+                        );
+                        totalTimeElement.textContent =
+                            secondsToTime(totalSeconds);
+
+                        doughnutChartCanvas.style.display = "block";
+                        doughnutNoData.style.display = "none";
+                        drawDoughnutChart(sortedData);
+                    } else {
+                        totalTimeElement.textContent = "00:00:00";
+                        appList.innerHTML = "";
+
+                        if (doughnutChartInstance) {
+                            doughnutChartInstance.destroy();
+                            doughnutChartInstance = null;
+                        }
+                        doughnutChartCanvas.style.display = "none";
+                        doughnutNoData.style.display = "block";
+                    }
+                };
+
+                // Fetch data from API
+                const fetchData = async () => {
+                    try {
+                        const response = await fetch("/stats");
+                        if (!response.ok) {
+                            throw new Error(
+                                `HTTP error! Status: ${response.status}`,
+                            );
+                        }
+                        appStats = await response.json();
+                        const today = new Date().toISOString().split("T")[0];
+
+                        // Only update the selected date if the user has not changed it
+                        if (!datePicker.value) {
+                            datePicker.value = today;
+                        }
+
+                        // Update UI for the currently selected date
+                        updateUI(datePicker.value);
+                        drawBarChart(appStats);
+                    } catch (e) {
+                        console.error("Error fetching data:", e);
+                    }
+                };
+
+                // Event listeners
+                datePicker.addEventListener("change", (event) => {
+                    updateUI(event.target.value);
+                });
+
+                darkModeToggle.addEventListener("click", toggleDarkMode);
+
+                // Initial setup
+                const savedTheme = localStorage.getItem("theme");
+                if (savedTheme === "dark") {
+                    document.body.classList.add("dark-mode");
+                    darkModeToggle.textContent = "☀️";
+                }
+
+                // Initial data fetch and subsequent refreshes
+                fetchData();
+                setInterval(fetchData, 5000); // 5 seconds interval
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </body>
+</html>
