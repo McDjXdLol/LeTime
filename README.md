@@ -28,7 +28,7 @@ The project also has a `requirements.txt` file which you will need to install.
 
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/your-username/LeTime.git](https://github.com/your-username/LeTime.git)
+    git clone [https://github.com/McDjXdLol/LeTime.git](https://github.com/McDjXdLol/LeTime.git)
     cd LeTime
     ```
 
@@ -44,7 +44,7 @@ The project also has a `requirements.txt` file which you will need to install.
 
     Example using g++ (on Windows):
     ```bash
-    g++ main.cpp -o app.exe -std=c++17 -lpsapi
+    g++ main.cpp -o app.exe
     ```
 
 2.  **Run the Python application:**
@@ -65,10 +65,6 @@ The project also has a `requirements.txt` file which you will need to install.
 - `front/index.html`: The web-based dashboard interface.
 - `front/logs/`: Directory where the daily CSV logs are stored.
 - `requirements.txt`: A list of all required Python libraries.
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 

@@ -78,7 +78,7 @@ def stats():
 
 while log_thread.is_alive():
     try:
-        app.run(host='0.0.0.0', port=5010, debug=False)
+        app.run(host='0.0.0.0', port=5000, debug=False)
     except KeyboardInterrupt:
         print("Stopping all...")
         sys.exit(1)
