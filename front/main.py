@@ -10,16 +10,13 @@ apps = []
 logs_files = []
 
 
-if getattr(sys, 'frozen', False):
-    BASE_PATH = Path(sys.executable).parent
-else:
-    BASE_PATH = Path(__file__).parent
+BASE_PATH = Path(__file__).parent.parent
+logs_path = BASE_PATH / "logs"
 
-logs_location = BASE_PATH / "logs"
+logs_location = logs_path
 
-if not logs_location.exists():
-    logs_location.mkdir(parents=True)
-
+if not os.path.exists(logs_location):
+    os.mkdir(logs_location)
 
 def search_for_logs():
     for logs in os.listdir(logs_location):

@@ -2,10 +2,8 @@ import sys
 from pathlib import Path
 import subprocess
 import time
-
 from tkinter import TclError
 from typing import Literal
-
 import customtkinter as ctk
 
 
@@ -274,7 +272,7 @@ if __name__ == "__main__":
 
     app.operate_apps.kill_all_apps()
 
-time.sleep(5)
+time.sleep(1.5) # Wait for all processes to stop
 
     # TODO:
     # - Edit "main.cpp" <- read_logs/database
